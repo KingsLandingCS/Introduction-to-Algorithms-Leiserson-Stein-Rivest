@@ -1,67 +1,35 @@
-function convexHull(points) {
+function efficientMergeSort(arr, start = 0, end = arr.length - 1) {
 
-    if (points.length < 3) return null;
+    if (start >= end) return;
 
-    let hull = [];
+    const mid = Math.floor((start + end) / 2);
 
-    let minIdx = 0;
+    efficientMergeSort(arr, start, mid);
+    efficientMergeSort(arr, mid + 1, end);
 
-    for (let i = 1; i < points.length; i++) {
+    let i = start, j = mid + 1;
 
-        if (points[i].x < points[minIdx].x) minIdx = i;
-    }
+    while (i <= mid && j <= end) {
 
-    let p = minIdx, q;
+        if (arr[i] <= arr[j]) {
 
-    do {
+            i++;
+        } else {
 
-        hull.push(points[p]);
-        q = (p + 1) % points.length;
-        for (let i = 0; i < points.length; i++) {
-            if (orientation(points[p], points[i], points[q] === 2)) {
+            const temp = arr[j];
 
-                q = i;
+            for (let k = j; k > i; k--) {
+
+                arr[k] = arr[k - 1];
             }
+
+            arr[i] = temp;
+            i++; mid++; j++;
         }
-
-        p = q;
-
-    } while (p !== minIdx);
-
-    return hull;
-
+    }
 }
 
-function orientation(p, q, r) {
+const dataset = [5, 3, 8, 2, 7, 1, 4, 6];
 
-    let val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    if (val === 0) return 0;
-    return (val > 0) ? 1 : 0;
-}
-
-let obstacles = [
-
-    { x: 1, y: 1 },
-    { x: 2, y: 5 },
-    { x: 4, y: 3 },
-    { x: 5, y: 2 },
-    { x: 6, y: 4 },
-    { x: 7, y: 1 },
-    { x: 8, y: 5 },
-    { x: 9, y: 3 }
-];
-
-let convexHullPoints = convexHull(obstacles);
-
-
-console.log("Convex Hull Points:");
-
-convexHullPoints.forEach(point => {
-
-    console.log(`(${point.x}, ${point.y})`);
-})
-
-
-
-
-
+efficientMergeSort(dataset);
+console.log("Sorted dataset:", dataset);
